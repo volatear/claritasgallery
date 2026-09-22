@@ -1,0 +1,11 @@
+{
+  "title": "Clarart",
+  "description": "Create and customize stunning websites effortlessly with intuitive design tools tailored for artists and creatives, enhancing online presence and engagement.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
