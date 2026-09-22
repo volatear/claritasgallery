@@ -35,14 +35,10 @@ type CarouselItem = {
 
 // ─── Data ─────────────────────────────────────────────────────
 const CAROUSEL_ITEMS: CarouselItem[] = [
-  { id: 'entrevero', title: 'Colección Entrevero',         series: 'Clara Ponce',  year: '2024',     img: '/artworks/art2.jpg', collectionId: 'entrevero' },
+  { id: 'entrevero', title: 'Colección Entrevero',         series: 'Clara Ponce',  year: '2026',     img: '/artworks/ent3-cover.jpg', collectionId: 'entrevero' },
   { id: 'gustos',    title: 'Colección Gustos Personales', series: 'Clara Ponce',  year: 'Sep 2026', img: '/artworks/g-a.jpg',  collectionId: 'gustos'    },
   { id: 'migi',      title: '"Migi, Parasyte"',            series: 'Clara Ponce',  year: 'Sep 2026', img: '/artworks/g-c.jpg',     collectionId: 'gustos'   },
   { id: 'sueltas',   title: 'Obras sueltas',               series: 'Clara Ponce',  year: '2024',     img: '/artworks/arcoiris.jpg', collectionId: 'sueltas'  },
-  { id: 'prox1',     title: 'Próximamente',                series: '',             year: '',         img: null,                    collectionId: null       },
-  { id: 'prox2',     title: 'Próximamente',                series: '',         year: '',         img: null,                 collectionId: null        },
-  { id: 'prox3',     title: 'Próximamente',                series: '',         year: '',         img: null,                 collectionId: null        },
-  { id: 'prox4',     title: 'Próximamente',                series: '',         year: '',         img: null,                 collectionId: null        },
 ]
 
 const COLLECTIONS: Collection[] = [
@@ -50,7 +46,7 @@ const COLLECTIONS: Collection[] = [
     id: 'entrevero',
     name: 'Colección Entrevero',
     label: 'Nuevas adquisiciones',
-    year: '2024',
+    year: '2026',
     description: 'Una serie sobre encontrar calma dentro del movimiento. Líneas que se cruzan, se desordenan y parecen perderse, pero que encuentran su propio equilibrio en el recorrido.',
     cover: '/artworks/art2.jpg',
     works: [
@@ -58,23 +54,34 @@ const COLLECTIONS: Collection[] = [
         id: 1,
         title: 'Entrevero I',
         artist: 'Clara Ponce',
-        year: '2024',
+        year: '2026',
         medium: 'Acrílico y tinta sobre lienzo',
         dimensions: '40 × 50 cm',
-        img: '/artworks/art3.jpg',
-        images: ['/artworks/art3.jpg', '/artworks/art4.jpg', '/artworks/art5.jpg'],
+        img: '/artworks/ent1-cover.jpg',
+        images: ['/artworks/ent1-cover.jpg', '/artworks/art3.jpg', '/artworks/art4.jpg', '/artworks/art5.jpg'],
         description: 'El movimiento como forma de encontrar equilibrio. Una línea que se enreda y se resuelve, como nosotros en la vida misma.',
       },
       {
         id: 2,
         title: 'Entrevero II',
         artist: 'Clara Ponce',
-        year: '2024',
+        year: '2026',
         medium: 'Acrílico y tinta sobre lienzo',
         dimensions: '40 × 60 cm',
-        img: '/artworks/art6.jpg',
-        images: ['/artworks/art6.jpg', '/artworks/art7.jpg'],
+        img: '/artworks/ent2-cover.jpg',
+        images: ['/artworks/ent2-cover.jpg', '/artworks/art6.jpg', '/artworks/art7.jpg'],
         description: 'El gesto circular que busca su propio centro. La mancha negra como punto de gravedad de todo el caos que la rodea.',
+      },
+      {
+        id: 3,
+        title: 'Entrevero III',
+        artist: 'Clara Ponce',
+        year: '2026',
+        medium: 'Acrílico y tinta sobre lienzo',
+        dimensions: '60 × 80 cm',
+        img: '/artworks/ent3-cover.jpg',
+        images: ['/artworks/ent3-cover.jpg', '/artworks/ent3-a.jpg', '/artworks/ent3-b.jpg'],
+        description: 'El trazo que vuelve sobre sí mismo. Una exploración del ritmo y la tensión entre caos y forma.',
       },
     ],
   },
@@ -152,6 +159,7 @@ const COLLECTIONS: Collection[] = [
         img: '/artworks/tiramisu-d.jpg',
         images: ['/artworks/tiramisu-d.jpg', '/artworks/tiramisu-a.jpg', '/artworks/tiramisu-b.jpg', '/artworks/tiramisu-c.jpg'],
         description: 'Una explosión de color en forma de postre. Violeta, azul, ocre, rosa, un cuchillo de plata y dos cerezas rojas. El tiramisu como excusa para pintar todo lo que te da alegría al mismo tiempo.',
+        sold: true,
       },
     ],
   },
@@ -161,7 +169,7 @@ const COLLECTIONS: Collection[] = [
 const CI = CAROUSEL_ITEMS
 const CN = CI.length            // 6 items
 const CARD_W  = 380             // card width in px
-const GAP     = 64              // gap between cards
+const GAP     = 120             // gap between cards
 const STEP    = CARD_W + GAP   // 444px per step
 const WINDOW  = 7               // items rendered: center ± 3
 const OFFSET  = Math.floor(WINDOW / 2) // 3
@@ -183,10 +191,10 @@ function useInView() {
   return { ref, inView }
 }
 
-function FadeUp({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
+function FadeUp({ children, delay = 0, className = '', style }: { children: React.ReactNode; delay?: number; className?: string; style?: React.CSSProperties }) {
   const { ref, inView } = useInView()
   return (
-    <div ref={ref} className={className} style={{ opacity: inView ? 1 : 0, transform: inView ? 'translateY(0)' : 'translateY(10px)', transition: `opacity 1s ease ${delay}ms, transform 1s ease ${delay}ms` }}>
+    <div ref={ref} className={className} style={{ opacity: inView ? 1 : 0, transform: inView ? 'translateY(0)' : 'translateY(10px)', transition: `opacity 1s ease ${delay}ms, transform 1s ease ${delay}ms`, ...style }}>
       {children}
     </div>
   )
@@ -275,15 +283,18 @@ export default function App() {
   const lockedRef   = useRef(false)
   lockedRef.current = locked
 
+  const resetAutoplay = useRef<() => void>(() => {})
   useEffect(() => {
     if (!playing) return
-    const id = setInterval(() => { if (!lockedRef.current) navigateRef.current(1) }, 5000)
+    let id = setInterval(() => { if (!lockedRef.current) navigateRef.current(1) }, 4500)
+    resetAutoplay.current = () => { clearInterval(id); id = setInterval(() => { if (!lockedRef.current) navigateRef.current(1) }, 4500) }
     return () => clearInterval(id)
   }, [playing])
 
   // Navigate carousel — window-offset technique: no snap-back needed
   const navigate = (dir: 1 | -1) => {
     if (locked) return
+    resetAutoplay.current()
     setLocked(true)
     setMoving(true)
     setTrackOff(prev => prev - dir * STEP)
@@ -370,16 +381,20 @@ export default function App() {
       {/* ── NAV ─────────────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b" style={{ borderColor: 'rgba(26,26,56,0.07)' }}>
         <div className="max-w-screen-xl mx-auto px-5 md:px-8 h-14 md:h-16 flex items-center justify-between gap-3">
-          <img src="/logo.png" alt="Clara Ponce" className="h-8 md:h-12 w-auto block flex-shrink-0" />
+          <img
+            src="/logo.png" alt="Clara Ponce" className="h-8 md:h-12 w-auto block flex-shrink-0 cursor-pointer"
+            onClick={() => { setActiveCollId(null); setSobreOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+          />
           <div className="flex items-center gap-3 md:gap-5 flex-shrink-0">
             <button
               onClick={() => {
                 const next = !sobreOpen
                 setSobreOpen(next)
-                if (next) setTimeout(() => sobreRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
+                if (activeCollId) setActiveCollId(null)
+                if (next) setTimeout(() => sobreRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), activeCollId ? 460 : 50)
               }}
               className="text-xs md:text-sm whitespace-nowrap"
-              style={{ opacity: sobreOpen ? 1 : 0.42, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+              style={{ opacity: sobreOpen && !activeCollId ? 1 : 0.65, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
             >
               Sobre mí
             </button>
@@ -443,15 +458,15 @@ export default function App() {
                   </div>
                   {/* Image / placeholder */}
                   <div
-                    style={{ aspectRatio: '3/4', background: item.img ? '#f2f1ef' : '#111', overflow: 'hidden', cursor: isCenter && item.collectionId ? 'pointer' : 'default' }}
-                    onClick={() => isCenter && item.collectionId && enterCollection(item.collectionId)}
+                    style={{ aspectRatio: '3/4', background: item.img ? '#f2f1ef' : '#111', overflow: 'hidden', cursor: item.collectionId ? 'pointer' : 'default' }}
+                    onClick={() => item.collectionId && enterCollection(item.collectionId)}
                   >
                     {item.img ? (
                       <img
                         src={item.img}
                         alt={item.title}
                         style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.8s ease', display: 'block' }}
-                        onMouseEnter={e => isCenter && ((e.target as HTMLImageElement).style.transform = 'scale(1.03)')}
+                        onMouseEnter={e => item.collectionId && ((e.target as HTMLImageElement).style.transform = 'scale(1.03)')}
                         onMouseLeave={e => ((e.target as HTMLImageElement).style.transform = 'scale(1)')}
                       />
                     ) : (
@@ -461,7 +476,7 @@ export default function App() {
                     )}
                   </div>
                   {/* CTA hint */}
-                  <div style={{ marginTop: 14, height: 18, opacity: isCenter && item.collectionId ? 0.28 : 0, transition: 'opacity 0.5s ease' }}>
+                  <div style={{ marginTop: 14, height: 18, opacity: item.collectionId ? (isCenter ? 0.6 : 0.32) : 0, transition: 'opacity 0.5s ease' }}>
                     <span style={{ fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase' }}>Ver colección →</span>
                   </div>
                 </div>
@@ -525,6 +540,47 @@ export default function App() {
         </div>
       </section>
 
+      {/* ── PLP — todas las obras ───────────────────────── */}
+      {!activeCollId && (() => {
+        const allWorks = COLLECTIONS.flatMap(c => c.works.map(w => ({ ...w, collectionName: c.name, _collId: c.id })))
+        const sorted = [...allWorks.filter(w => !w.sold), ...allWorks.filter(w => w.sold)]
+        return (
+          <section className="border-t" style={{ borderColor: 'rgba(26,26,56,0.08)' }}>
+            <div className="max-w-screen-xl mx-auto px-8 py-20">
+              <FadeUp>
+                <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-light italic leading-tight mb-12" style={{ ...serif }}>Todas las obras</h2>
+              </FadeUp>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12">
+                {sorted.map((w, i) => (
+                  <FadeUp key={w.id + '-' + w._collId} delay={i * 40}>
+                    <div
+                      className="group cursor-pointer"
+                      onClick={() => { setModalImgIdx(0); setActiveWork(w) }}
+                    >
+                      <div className="relative overflow-hidden mb-3" style={{ aspectRatio: '3/4', background: '#f2f1ef' }}>
+                        <img
+                          src={w.img}
+                          alt={w.title}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                          style={{ display: 'block' }}
+                        />
+                        {w.sold && (
+                          <span style={{ position: 'absolute', bottom: 10, left: 10, fontSize: 9, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#fff', background: 'rgba(26,26,56,0.7)', padding: '3px 7px' }}>
+                            Vendida
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm font-light italic leading-snug mb-0.5" style={{ ...serif, opacity: w.sold ? 0.4 : 0.82 }}>{w.title}</p>
+                      <p className="text-[10px] tracking-[0.1em] uppercase" style={{ opacity: 0.32 }}>{w.collectionName}</p>
+                    </div>
+                  </FadeUp>
+                ))}
+              </div>
+            </div>
+          </section>
+        )
+      })()}
+
       {/* ── COLLECTION VIEW ─────────────────────────────── */}
       {collection && (
         <section ref={collRef} className="border-t pt-20 pb-32" style={{ borderColor: 'rgba(26,26,56,0.08)' }}>
@@ -537,7 +593,7 @@ export default function App() {
                 <button
                   onClick={closeCollection}
                   className="flex items-center gap-1.5 text-[11px] tracking-[0.12em] uppercase mb-6 hover:opacity-70 transition-opacity"
-                  style={{ opacity: 0.3 }}
+                  style={{ opacity: 0.75 }}
                 >
                   <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
                     <path d="M11 4L5 8l6 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
@@ -593,29 +649,28 @@ export default function App() {
           onClick={closeModal}
         >
           <div
-            className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto grid md:grid-cols-2"
+            className="bg-white w-full max-w-4xl max-h-[92vh] overflow-y-auto grid md:grid-cols-2"
             style={{ boxShadow: '0 24px 72px rgba(26,26,56,0.10)', opacity: modalVisible ? 1 : 0, transform: modalVisible ? 'translateY(0)' : 'translateY(6px)', transition: 'opacity 0.4s ease, transform 0.4s ease' }}
             onClick={e => e.stopPropagation()}
           >
             {/* Image panel */}
             <div className="flex flex-col">
-              <div className="aspect-[3/4] bg-stone-50 flex-1">
+              <div className="bg-stone-50 flex items-center justify-center" style={{ minHeight: 420 }}>
                 <img
                   src={(activeWork.images ?? [activeWork.img])[modalImgIdx]}
                   alt={activeWork.title}
-                  className="w-full h-full object-cover"
-                  style={{ opacity: modalVisible ? 1 : 0, transition: 'opacity 0.4s ease 0.1s' }}
+                  style={{ width: '100%', height: 'auto', display: 'block', opacity: modalVisible ? 1 : 0, transition: 'opacity 0.4s ease 0.1s' }}
                 />
               </div>
               {/* Thumbnails — only when multiple images exist */}
               {activeWork.images && activeWork.images.length > 1 && (
-                <div style={{ display: 'flex', gap: 4, padding: '8px 8px 0' }}>
+                <div style={{ display: 'flex', gap: 6, padding: '12px 16px 16px' }}>
                   {activeWork.images.map((img, i) => (
                     <button
                       key={i}
                       onClick={() => setModalImgIdx(i)}
                       style={{
-                        width: 44, height: 44, flexShrink: 0, padding: 0, border: 'none', cursor: 'pointer',
+                        width: 56, height: 56, flexShrink: 0, padding: 0, border: 'none', cursor: 'pointer',
                         background: '#f2f1ef', overflow: 'hidden',
                         outline: i === modalImgIdx ? '1.5px solid #1a1a38' : '1.5px solid transparent',
                         opacity: i === modalImgIdx ? 1 : 0.45,
@@ -783,45 +838,44 @@ export default function App() {
       {/* ── SOBRE MÍ ────────────────────────────────────── */}
       {sobreOpen && !activeCollId && (
         <section ref={sobreRef} className="border-t" style={{ borderColor: 'rgba(26,26,56,0.08)' }}>
-          <div className="max-w-screen-xl mx-auto px-8 py-24 grid md:grid-cols-2 gap-16 md:gap-24 items-start">
-            <FadeUp>
+          <div className="max-w-screen-xl mx-auto px-8 py-24" style={{ display: 'flex', flexDirection: 'row', gap: '6rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+            {/* Texto */}
+            <FadeUp style={{ flex: '1 1 340px', minWidth: 0 }}>
               <p className="text-[10px] font-bold tracking-[0.18em] uppercase mb-6" style={{ opacity: 0.35 }}>Sobre la artista</p>
               <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-light italic leading-[1.1] mb-8" style={serif}>
                 Clara Ponce
               </h2>
               <div className="space-y-5 text-sm leading-relaxed" style={{ opacity: 0.58 }}>
-                <p>
-                  Clara Ponce es una artista visual argentina cuya práctica navega entre el gesto abstracto y la imagen cotidiana. Sus obras combinan acrílico, tinta, pastel y pan de oro sobre lienzo, con una energía que oscila entre lo íntimo y lo expansivo.
-                </p>
-                <p>
-                  Cada serie nace de una obsesión distinta: el movimiento del cuerpo en el espacio, los gustos que definen una personalidad, los personajes que se quedan en la cabeza. Pinta rápido, con la misma honestidad desprolija de un diario personal.
-                </p>
-                <p>
-                  Trabaja desde Buenos Aires y exhibe sus obras de forma independiente, apostando por el arte accesible y el vínculo directo con quien elige llevarse una pieza.
-                </p>
+                <p>Soy Clara Ponce, nacida en Buenos Aires, Argentina y creadora de este universo que llamo Clara Art Gallery. Desde muy chica encontré en la expresión visual una forma de conectar con lo más profundo: los colores, las texturas y los gestos sutiles que cuentan historias sin palabras.</p>
+                <p>Trabajo hace años en el mundo del contenido, la belleza y la comunicación, colaborando con grandes marcas de beauty, lifestyle y bienestar, y compartiendo en mis redes todo aquello que resalta la belleza en lo cotidiano: los rituales, los hábitos conscientes, los objetos del día a día. Creo profundamente que la estética es una forma de energía: cuando cuidamos lo que nos rodea, también nos cuidamos a nosotros.</p>
+                <p>El arte llegó como refugio y se transformó en mi lugar seguro en el mundo. Pinto desde que tengo memoria, crecí en una casa donde papá pintaba y leía mucho, un colegio en donde no la pasaba bien pero predominaba el arte y de alguna manera, siempre me acobijó. Estudié algunos años diseño gráfico y pude empaparme un poco más de la sinergía de la comunicación en otras formas. Cada obra es un fragmento de mi recorrido interior, una invitación a detenerse, a contemplar, a habitar el presente.</p>
+                <p>En esta galería conviven mis pinturas, cerámicas y piezas únicas, creadas con materiales nobles y técnicas mixtas que combinan lo ancestral con lo contemporáneo. Cada pieza nace con intención, para acompañar espacios y resonar con quienes buscan algo más que una obra: una historia, una energía, una presencia, algo que haga pensar o sonreír.</p>
+                <p style={{ opacity: 0.8 }}>Bienvenida a este espacio donde arte, belleza y alma se encuentran.<br />Gracias por habitarlo conmigo.</p>
               </div>
               <button
                 onClick={() => openContact()}
                 className="mt-10 flex items-center gap-2 text-[11px] tracking-[0.14em] uppercase font-medium hover:opacity-60 transition-opacity"
-                style={{ opacity: 0.42, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                style={{ opacity: 0.75, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
               >
                 Contactar
                 <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
                   <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
                 </svg>
               </button>
-            </FadeUp>
-            <FadeUp delay={120}>
-              <div className="grid grid-cols-2 gap-3">
-                {['/artworks/art2.jpg', '/artworks/g-a.jpg', '/artworks/tiramisu-d.jpg', '/artworks/sol-naciente-b.jpg'].map((src, i) => (
-                  <div key={i} className="aspect-[3/4] overflow-hidden" style={{ background: '#f2f1ef' }}>
-                    <img src={src} alt="" className="w-full h-full object-cover" style={{ transition: 'transform 0.8s ease' }}
-                      onMouseEnter={e => ((e.target as HTMLImageElement).style.transform = 'scale(1.04)')}
-                      onMouseLeave={e => ((e.target as HTMLImageElement).style.transform = 'scale(1)')}
-                    />
-                  </div>
-                ))}
+              <div className="flex items-center gap-5 mt-6">
+                <a href="https://instagram.com/clarartgallery" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[11px] tracking-[0.1em] hover:opacity-60 transition-opacity" style={{ opacity: 0.42, color: 'inherit' }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+                  @clarartgallery
+                </a>
+                <a href="https://instagram.com/ponceclari" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[11px] tracking-[0.1em] hover:opacity-60 transition-opacity" style={{ opacity: 0.42, color: 'inherit' }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+                  @ponceclari
+                </a>
               </div>
+            </FadeUp>
+            {/* Foto */}
+            <FadeUp delay={120} style={{ flex: '0 0 360px', alignSelf: 'center' }}>
+              <img src="/artworks/clara-foto.jpg" alt="Clara Ponce" style={{ width: '100%', height: 'auto', display: 'block' }} />
             </FadeUp>
           </div>
         </section>
@@ -830,12 +884,22 @@ export default function App() {
       {/* ── FOOTER ──────────────────────────────────────── */}
       {!activeCollId && (
         <footer className="border-t py-10" style={{ borderColor: 'rgba(26,26,56,0.08)' }}>
-          <div className="max-w-screen-xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-3 text-xs" style={{ opacity: 0.28 }}>
+          <div className="max-w-screen-xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-6">
             <img src="/logo.png" alt="Clara Ponce" style={{ height: 28, width: 'auto', display: 'block' }} />
-            <span>© 2026 Todos los derechos reservados</span>
-            <a href="https://dim.ar/" target="_blank" rel="noopener noreferrer" className="hover:opacity-60 transition-opacity" style={{ opacity: 0.55 }}>
-              Hecha por dim.ar
-            </a>
+            <div className="flex items-center gap-6">
+              <a href="https://instagram.com/clarartgallery" target="_blank" rel="noopener noreferrer" className="hover:opacity-60 transition-opacity flex items-center gap-2" style={{ color: '#000', fontSize: 13, fontWeight: 500 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+                @clarartgallery
+              </a>
+              <a href="https://instagram.com/ponceclari" target="_blank" rel="noopener noreferrer" className="hover:opacity-60 transition-opacity flex items-center gap-2" style={{ color: '#000', fontSize: 13, fontWeight: 500 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+                @ponceclari
+              </a>
+              <span style={{ width: 1, height: 16, background: 'rgba(26,26,56,0.15)', display: 'inline-block' }} />
+              <a href="https://dim.ar/" target="_blank" rel="noopener noreferrer" className="hover:opacity-60 transition-opacity" style={{ color: '#000', fontSize: 13, fontWeight: 600 }}>
+                Hecha por dim.ar
+              </a>
+            </div>
           </div>
         </footer>
       )}
